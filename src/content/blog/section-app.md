@@ -29,19 +29,19 @@ Please note: This project is currently under active development, so substantial 
 
 To keep things manageable and minimize complexity in these early stages of development, I have designed the site with a serverless architecture.
 
-#### Frontend
+### Frontend
 
 The frontend is developed using NextJS 13.4 with the App Router and Server Actions hosted on Vercel
 
-#### Data storage and management
+### Data storage and management
 
 For data storage and management, I am using Postgres, hosted on Supabase. Google cloud storage provides content delivery network (CDN) capabilities. Currently, Pinecone is my vector store, but I'm in the process of migrating to a dockerised PSQL, coupled with PGVector.
 
-#### Embeddings
+### Embeddings
 
 In order to generate embeddings, I'm utilizing the [INSTRUCTOR Large model](https://instructor-embedding.github.io/). I have set up a FastAPI+Uvicorn server in a Docker container, which is hosted on Google Cloud Run for serverless inference.
 
-#### Completion model
+### Completion model
 
 When it comes to completion models, none of the open-source options can quite match up to the performance of OpenAI's GPT family. As a result, I am using OpenAI's chat completion API for inference.
 
