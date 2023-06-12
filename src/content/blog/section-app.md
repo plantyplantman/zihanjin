@@ -15,15 +15,23 @@ description: The process of designing, building and deploying a full-stack legis
 
 ## Table of contents
 
+## NOTE
+
+THIS PROJECT IS UNDER ACTIVE DEVELOPMENT.
+
 ## Introduction
 
 Imagine if you could interact with an immense, complex body of textual data—like legislation—and it could not only understand your questions, but also respond accurately. Intriguing, right? It's this vision that I have embarked on turning into a reality with a project aimed at democratizing access to legislation.
 
 While legislation is accessible online, its dense legal jargon often makes understanding it difficult. My project aims to remove this barrier, enabling anyone to swiftly query and comprehend active legislation.
 
-Please note: This project is currently under active development, so substantial changes are to be expected in the near future.
+<br/>
+
+**Please note: This project is currently under active development. Many features may not be working as intended. Substantial changes are to be expected in the near future.**
 
 [Visit the site here](https://selenium-nextjs.vercel.app/legislation)
+
+<br/>
 
 ## Technical Framework
 
@@ -49,6 +57,8 @@ I am also keeping a close eye on the development of Microsoft's foundational mod
 
 The journey towards AI-driven legislation comprehension is a thrilling one, and I am excited to be on this path. Now, let's delve into the details of how I've sourced and managed the vast amount of data that powers this project.
 
+<br/>
+
 ## Data collection
 
 As of 12/06/2023, I have managed to scrape, index, and embed all active legislation from the Australian Capital Territory (ACT). All legislation was gathered from [AustLII](https://www.austlii.edu.au/) utilising [Selenium](https://pypi.org/project/selenium/) and the Chromium driver.
@@ -63,7 +73,7 @@ To overcome this, I opted for a different approach in my second attempt. Instead
 
 #### The scaping process
 
-Below are some screenshots to give you a visual idea of the scraping process:
+Below are some diagrams to illustrate the scraping process:
 ![Scraping process 1](/assets/section-article/1.png)
 ![Scraping process 2](/assets/section-article/2.png)
 ![Scraping process 3](/assets/section-article/3.png)
@@ -85,14 +95,22 @@ I created a Python script to organize this data. The script navigates the direct
 
 Additionally, I created a Google Cloud Storage link for each section and included it in the JSON file. This JSON file was then used to insert the legislation, its metadata, its sections, and the sections' metadata into the PSQL database.
 
+<br/>
+
 ## Embedding
 
 ### Understanding Embeddings
 
-Embedding is a powerful method to transform words, sentences, paragraphs, and even whole documents into n-dimensional vectors. This transformation allows us to perform vector space computations to identify which pieces of text are similar to the input. Typically, these computations use algorithms like K-nearest-neighbours, cosine similarity, or dot product.
+Embedding is a powerful method to transform words, sentences, paragraphs, and even whole documents into n-dimensional vectors, with these vectors representing the semantic and conceptual meaning of the captured text. This can be done by a variety of language processing algorithms or models such as Google's Word2Vec, all-MiniLM-L6, or OpenAI's ADA-002.
+
+This transformation allows us to identify which pieces of text are most similar to any given input, not only in terms of key word matching but also semantically and conceptually. Typically, these computations use algorithms like K-nearest-neighbours, cosine similarity, or dot product.
+
+<br/>
 
 ![Visualisation of embedded books in vector space](https://miro.medium.com/v2/resize:fit:1400/1*zhlXuzV2kI2V2qJ5M3uPPg.gif)
-^ an interactive exploration of book embeddings using [projector](https://projector.tensorflow.org/). Credit: [Will Koehrsen](https://towardsdatascience.com/neural-network-embeddings-explained-4d028e6f0526)
+An interactive exploration of book embeddings using [projector](https://projector.tensorflow.org/). Credit: [Will Koehrsen](https://towardsdatascience.com/neural-network-embeddings-explained-4d028e6f0526)
+
+<br/>
 
 The technique of embedding isn't novel; it has been employed for decades to search for and retrieve semantically similar content. However, earlier efforts to represent words as vectors often fell short due to the complex nature of human language and struggled to capture higher-level conceptual meaning.
 
@@ -102,9 +120,9 @@ There are several commercially available embedding models, such as OpenAI's ADA-
 
 ### The Embedding process
 
-For this project, I utilized the INSTRUCTOR model to transform each section of text into a 768-dimensional vector. Due to the model's maximum context length of 512 tokens (approximately 2048 characters), some sections of legislation were too long to feed directly into the model. In these cases, I split the section into equal-length chunks with an overlap of 200 characters to ensure no loss of crucial information.
+For this project, I utilised the INSTRUCTOR model to transform each section of text into a 768-dimensional vector. Due to the model's maximum context length of 512 tokens (approximately 2048 characters), some sections of legislation were too long to feed directly into the model. In these cases, I split the section into equal-length chunks with an overlap of 200 characters to ensure no loss of crucial information.
 
-Once each chunk or section was embedded, the resulting vector was upserted to Pinecone. You can find the embedding script [here](https://github.com/plantyplantman/legislation-scraping/blob/57b176b98da67baf1dfe45fe9dacfb16dd87f24b/scripts/embed.py).
+Once each chunk or section was embedded, the resulting vector was upserted to Pinecone. You can find the embedding script [here](https://github.com/plantyplantman/legislation-scraping/blob/838db109fffe1d3d7539299cab47035214790bf9/scripts/embed.py).
 
 However, Pinecone has proven not to be the optimal vector store for this project due to its limited functionality in the free tier and its slow performance with high cardinality metadata like UUIDs. As a result, I'm migrating to PSQL with the PGVector extension, which provides support for high dimensionality vectors and maintains the benefits of PSQL. Advantages include foreign key support for vector tables, efficient indexing for high cardinality values, and, most importantly, it's free.
 
@@ -126,6 +144,8 @@ curl -X POST "https://default-service-ssgtgd52nq-ts.a.run.app/embed" \
 ```
 
 Keep in mind that your first request may encounter a cold start, potentially requiring 30-45s to boot up. However, subsequent inference should be significantly faster.
+
+<br/>
 
 ## Frontend & Frontend Server
 
@@ -165,9 +185,11 @@ Supabase is an open-source Software-as-a-Service (SaaS) platform that simplifies
 
 For this project, I chose not to use the SDKs provided by OpenAI and Pinecone, as I felt they added an unnecessary layer of complexity. Unless you need to, you can often make do with issuing HTTP requests to their APIs.
 
-#### Tailwind CSS
+#### Tailwind CSS & Various UI libraries.
 
-Tailwind CSS greatly simplifies working with CSS. Notably, the command bar interface of the site was inspired by the command bar in Tailwind's documentation.
+Tailwind CSS greatly simplifies working with CSS. Notably, the command K/ control K interface of the site was inspired by the command bar in [Tailwind's documentation](https://tailwindcss.com/).
+
+Various UI libraries were used such as [KBar](https://github.com/timc1/kbar) for the command K interface.
 
 #### Prisma
 
