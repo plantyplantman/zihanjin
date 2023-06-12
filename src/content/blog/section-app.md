@@ -23,7 +23,7 @@ While legislation is accessible online, its dense legal jargon often makes under
 
 Please note: This project is currently under active development, so substantial changes are to be expected in the near future.
 
-[Visit the site here](selenium-nextjs.vercel.app)
+[Visit the site here](https://selenium-nextjs.vercel.app/legislation)
 
 ## Technical Framework
 
